@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Dao.Teacher.TeacherMapper">
+
+    <!-- 1. 根据No和password登录-->
+    <select id="login" parameterType="Bean.LoginForm" resultType="Bean.Teacher">
+        select *
+        from tb_teacher
+        where no = #{Userno}
+        and password = #{Password};
+    </select>
+
+    <!-- 2. 修改密码-->
+    <update id="updatePassword" parameterType="Bean.Teacher">
+        update tb_teacher set password = #{password};
+    </update>
+
+    <!-- 3. 查询学生信息/根据班级、姓名、学号查询学生信息 -->
+    <select id="getList" resultType="Bean.Teacher" parameterType="Bean.Teacher">
+        select * from tb_teacher
+        <where>
+            <if test="clazzname!=null and clazzname!=''">
+                AND clazzname = #{clazzname}
+            </if>
+            <if test="name!=null and name!=''">
+                AND name = #{name}
+            </if>
+            <if test="no!=null and no!=''">
+                AND no = #{no}
+            </if>
+        </where>
+    </select>
+
+    <!-- 4. add-->
+    <insert id="add" parameterType="Bean.Teacher">
+        insert into tb_teacher values (null,#{name},#{gender},#{password},#{email},#{phone},#{address},#{no},#{clazzname})
+    </insert>
+
+    <!-- 5. findByNo-->
+    <select id="findByNo" parameterType="Bean.Teacher" resultType="Bean.Teacher">
+        select * from tb_teacher where no = #{no};
+    </select>
+
+    <!-- 6. deleteById-->
+    <delete id="deleteById" parameterType="Integer">
+        delete from tb_teacher where id in
+        <foreach collection="array" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <!-- 7. editById-->
+    <update id="editById" parameterType="Bean.Teacher">
+        update tb_teacher
+        <set>
+            <if test="no != null and no != ''">no = #{no},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null and gender != ''">gender = #{gender},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="clazzname != null and clazzname !=''">clazzname = #{clazzname},</if>
+        </set>
+        where id = #{id};
+    </update>
+
+</mapper>

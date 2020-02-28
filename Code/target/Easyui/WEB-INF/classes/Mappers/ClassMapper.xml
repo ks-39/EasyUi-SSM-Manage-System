@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Dao.Clazz.ClazzMapper">
+
+    <!-- 1. getClazzname-->
+    <select id="getClazzName" resultType="Bean.Clazz">
+        select * from tb_clazz;
+    </select>
+
+    <!-- 2. getList -->
+    <select id="getList" resultType="Bean.Clazz" parameterType="Bean.Clazz">
+        select * from tb_clazz
+        <where>
+            <if test="name!=null and name!=''">
+                AND name = #{name}
+            </if>
+            <if test="no!=null and no!=''">
+                AND no = #{no}
+            </if>
+        </where>
+    </select>
+
+    <!--3. findByNo-->
+    <select id="findByNo" parameterType="Bean.Clazz" resultType="Bean.Clazz">
+        select * from tb_clazz where no = #{no};
+    </select>
+
+    <!--4. add-->
+    <insert id="add" parameterType="Bean.Student">
+        insert into tb_clazz values (null,#{no},#{name},#{clazz_teacher},#{clazz_teacher_phone},#{clazz_teacher_email})
+    </insert>
+
+    <!-- 5. deleteByNo-->
+    <delete id="deleteById" parameterType="Integer">
+        delete from tb_clazz where id in
+        <foreach collection="array" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <!-- 6. editByNo-->
+    <update id="editById" parameterType="Bean.Clazz">
+        update tb_clazz
+        <set>
+            <if test="no != null and no != ''">no = #{no},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="clazz_teacher != null and clazz_teacher != ''">clazz_teacher = #{clazz_teacher},</if>
+            <if test="clazz_teacher_email != null and clazz_teacher_email != ''">clazz_teacher_email = #{clazz_teacher_email},</if>
+            <if test="clazz_teacher_phone != null and clazz_teacher_phone != ''">clazz_teacher_phone = #{clazz_teacher_phone},</if>
+        </set>
+        where id = #{id};
+    </update>
+
+</mapper>

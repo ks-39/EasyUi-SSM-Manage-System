@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>教务管理系统</title>
+
+    <!--引入EasyUi的CSS(此处使用default主题)-->
+    <link rel="stylesheet" type="text/css" href="../Static/Easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Static/Easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../Static/Easyui/themes/color.css">
+
+    <!--引入Easyui的js文件-->
+    <script type="text/javascript" src="../Static/Easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../Static/Easyui/jquery.easyui.min.js"></script>
+    <!--汉化-->
+    <script type="text/javascript" src="../Static/Easyui/locale/easyui-lang-zh_CN.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#ff").form('load','/GetInfo')
+        })
+    </script>
+
+</head>
+<body>
+
+    <h2 style="float: left;width: 500px">xx学校教务管理系统</h2>
+
+    <a href="" class="easyui-menubutton" data-options="menu:'#mm2'" style="float: right;margin-top: 25px">
+        <span style="font-size: 25px;color: #6b9cde">hello,Admin</span>
+    </a>
+    <div id="mm2" style="width:125px;">
+        <div style="font-size: 20px;color: #6b9cde">
+            <a href="" >修改密码</a>
+        </div>
+        <div style="font-size: 20px;color: #6b9cde" onclick="exit()">退出</div>
+    </div>
+
+<div class="easyui-layout" style="width:100%;height:600px;">
+
+    <!--上下右区域-->
+    <div data-options="region:'north'" style="height:50px"></div>
+    <div data-options="region:'south'" style="height:50px;"></div>
+    <div data-options="region:'east'" style="width: 0px;"></div>
+
+    <!--左-->
+    <div data-options="region:'west',split:false" title="菜单栏" style="width:250px">
+        <!--accordion:手风琴-->
+        <div id="accordition" class="easyui-accordion" data-options="fit:true,border:false">
+
+            <div title="学生信息"  style="padding:10px;">
+                <span style="font-size: 15px" id="studentlist"><a href="">学生列表</a></span>
+            </div>
+
+
+            <div title="教师信息"  style="padding:10px;">
+                <span style="font-size: 15px" id="teacherlist"><a href="" >教师列表</a></span>
+            </div>
+
+            <div title="班级信息" style="padding:10px">
+                <span style="font-size: 15px" id="classlist"><a href="" >班级列表</a></span>
+            </div>
+
+            <div title="年级信息" style="padding:10px">
+                <span style="font-size: 15px" id="gradelist"><a href="" >年级列表</a></span>
+            </div>
+
+            <div title="管理员信息" style="padding:10px">
+                <span style="font-size: 15px" id="adminlist"><a href="" >管理员列表</a></span>
+            </div>
+
+            <div title="用户设置" style="padding:10px">
+                <span style="font-size: 15px" id="editpassword"><a href="" >修改密码</a></span><br><br>
+                <span style="font-size: 15px" id="index" onclick="Index()"><a href="" >主页</a></span><br><br>
+                <span style="font-size: 15px" id="exit" onclick="exit()"><a href="" >退出</a></span><br><br>
+            </div>
+
+        </div>
+    </div>
+
+    <div data-options="region:'center',title:'Main',iconCls:'icon-ok'">
+        <!--tabs选项卡-->
+        <div class="easyui-tabs" data-options="fit:true,border:false,plain:false">
+
+            <div title="个人信息" style="padding:10px">
+                <form id="ff1" style="padding: 20px 50px 20px 50px;margin-left: 200px">
+                    <table cellpadding="10" style="font-size: 20px;color: #6b9cde">
+                        <tr>
+                            <td>Name:</td>
+                            <td>
+                                <span name="name" style="width:100%;height:35px;padding:10px;">${Userinfo.name}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Id:</td>
+                            <td>
+                                <span name="id" style="width:100%;height:35px;padding:10px;">${Userinfo.id}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Password:</td>
+                            <td>
+                                <span  name="password" style="width:100%;height:35px;padding:10px;">${Userinfo.password}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Gender:</td>
+                            <td>
+                                <span name="gender" style="width:100%;height:35px;padding:10px;">${Userinfo.gender}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Email:</td>
+                            <td>
+                                <span name="email" style="width:100%;height:35px;padding:10px;">${Userinfo.email}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Phone:</td>
+                            <td>
+                                <span name="phone" style="width:100%;height:35px;padding:10px;">${Userinfo.phone}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Address:</td>
+                            <td>
+                                <span name="address" style="width:100%;height:35px;padding:10px;">${Userinfo.address}</span>
+                            </td>
+                        </tr>
+
+                    </table>
+                </form>
+
+            </div>
+
+            <div title="修改信息" style="padding:10px">
+                <form id="ff2" style="padding: 20px 50px 20px 50px;margin-left: 200px">
+                    <table cellpadding="10" style="font-size: 20px;color: #6b9cde">
+                        <tr>
+                            <td>Name:</td>
+                            <td>
+                                <input class="easyui-textbox" type="text" name="name" data-options="required:true"></input>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Id:</td>
+                            <td>
+                                <input class="easyui-textbox" type="text" name="id" data-options="required:true"></input>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Gender:</td>
+                            <td>
+                                <select class="easyui-combobox" name="gender" style="width: 80px">
+                                    <option value="male" selected="selected">男</option>
+                                    <option value="female" >女</option>
+                                    <option value="third gender" >第三性</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Email:</td>
+                            <td>
+                                <input class="easyui-textbox" type="text" name="email" data-options="required:true,validType:'email'">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Phone:</td>
+                            <td>
+                                <input class="easyui-textbox" type="text" name="phone" data-options="required:true,validType:'phone'">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Address:</td>
+                            <td>
+                                <input class="easyui-textbox" type="text" name="address" data-options="required:true">
+                            </td>
+                        </tr>
+
+                    </table>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+    <script type="text/javascript">
+        function exit() {
+            $.messager.confirm('提示', '你确定要退出吗?', function(r){
+                if(r){
+                    alert("退出")
+                }else{
+                }
+            });
+        }
+    </script>
+
+
+
+</body>
+</html>

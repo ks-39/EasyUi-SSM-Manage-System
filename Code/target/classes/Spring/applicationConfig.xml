@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--  1. 开启Dao接口扫描器: 扫描Dao层 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="Dao"/>
+    </bean>
+
+    <!--  2. 开启Spring IOC注解扫描器: 扫描Servie层-->
+    <context:component-scan base-package="Service"/>
+
+    <!--  3. Spring与Mybatis整合  -->
+    <context:property-placeholder location="classpath:Database/druid.properties"></context:property-placeholder>
+    <!--  3.1 配置连接池  -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${driverClassName}"></property>
+        <property name="url" value="${url}"></property>
+        <property name="username" value="${user}"></property>
+        <property name="password" value="${password}"></property>
+        <property name="initialSize" value="${initialSize}"></property>
+        <property name="maxActive" value="${maxActive}"></property>
+        <property name="maxWait" value="${maxWait}"></property>
+        <property name="minIdle" value="${minIdle}"></property>
+    </bean>
+
+    <!-- 3.2 配置sqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <!--自动扫描Mapper映射文件-->
+        <property name="mapperLocations" value="classpath:Mappers/*.xml"></property>
+        <!--扫描mybatis-config.xml-->
+        <property name="configLocation" value="classpath:Mybatis/MyabtisConfig.xml"></property>
+        <!--分页插件-->
+        <property name="plugins">
+            <array>
+                <!-- 传入插件的对象 -->
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <!-- 指定数据库类型 -->
+                        <value>helperDialct=mysql</value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+    <!--  4. 开启事务注解扫描  -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <!--  4.1 配置Spring事务管理器  -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--  4.2 配置事务管理  -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!-- 对insert,update,delete方法进行事务管理,只要有异常就回滚 -->
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Throwable" read-only="false"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Throwable" read-only="false"/>
+            <tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Throwable" read-only="false"/>
+            <!-- select方法,开启只读,提高数据库访问性能 -->
+            <tx:method name="select*" read-only="true"/>
+            <!-- 对其他方法 使用默认的事务管理 -->
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+<!--    4.3 事务 aop 配置-->
+    <aop:config>
+        <aop:pointcut id="serviceMethods" expression="execution(public * Service.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
+    </aop:config>
+
+</beans>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--  0. 开启SpringMVC注解  -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+    <!--  1. 扫描Controller层注解  -->
+    <context:component-scan base-package="Controller"></context:component-scan>
+
+    <!--  2. 配置视图解析器(可能不需要)  -->
+    <bean id="ViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/Views/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!--  3. 过滤静态资源  -->
+    <mvc:default-servlet-handler/>
+
+    <!--4. 拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/Static/**"/>
+            <mvc:exclude-mapping path="/Login"/>
+            <mvc:exclude-mapping path="/Logout"/>
+            <mvc:exclude-mapping path="/CheckLogin"/>
+            <bean class="Interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+
+    </mvc:interceptors>
+</beans>
